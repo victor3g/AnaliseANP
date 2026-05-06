@@ -21,7 +21,7 @@ def baixar_arquivo(nome, url, pasta_destino):
         resposta.raise_for_status()
         
         extensao = url.split('.')[-1]
-        caminho_arquivo = os.path.join(pasta_destino, f"{nome}_bruto.{extensao}")
+        caminho_arquivo = os.path.join(pasta_destino, f"{nome}.{extensao}")
         
         with open(caminho_arquivo, 'wb') as arquivo:
             for chunk in resposta.iter_content(chunk_size=8192):
