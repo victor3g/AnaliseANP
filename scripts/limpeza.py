@@ -1,0 +1,108 @@
+import os
+import glob
+import pandas as pd
+import re
+import csv
+
+RAW_DIR = './data/raw/'
+TRUSTED_DIR = './data/trusted/'
+
+os.makedirs(TRUSTED_DIR, exist_ok=True)
+
+def analyze_file_structure(file_path):
+    
+    encoding = 'utf-8'
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            f.readline()
+    except UnicodeDecodeError:
+        encoding = 'latin1'
+
+    with open(file_path, 'r', encoding=encoding) as f:
+        # Lê até as primeiras 100 linhas não-vazias
+        lines = [line.strip() for line in f.readlines()[:100] if line.strip()]
+        
+    if not lines:
+        return encoding, ';', 0
+        
+    sep_counts = {';': sum(l.count(';') for l in lines), ',': sum(l.count(',') for l in lines)}
+    delimiter = ';' if sep_counts[';'] >= sep_counts[','] else ','
+
+    #Encontra a linha do cabeçalho baseada no seu padrão estrito
+    header_idx = 0
+    with open(file_path, 'r', encoding=encoding) as f:
+        reader = csv.reader(f, delimiter=delimiter)
+        for i, row in enumerate(reader):
+            row = [cell.strip() for cell in row]
+            
+            if not row or any(cell == '' for cell in row):
+                continue
+            
+            if len(set(row)) != len(row):
+                continue
+            
+            text_cells = sum(1 for cell in row if not cell.replace('.', '').replace('-', '').isdigit())
+            if text_cells >= len(row) / 2:
+                header_idx = i
+                break
+
+    return encoding, delimiter, header_idx
+
+def safe_clean_cnpj(val):
+
+    val_str = str(val).strip()
+    
+    if not val_str:
+        return val
+        
+    # Remove pontuações
+    val_clean = re.sub(r'\D', '', val_str)
+    
+    if not val_clean:
+        return val
+        
+    return val_clean.zfill(14)
+
+def processar_arquivos():
+    csv_files = glob.glob(os.path.join(RAW_DIR, '*.csv'))
+    
+    if not csv_files:
+        print(f"Nenhum arquivo CSV encontrado em: {RAW_DIR}")
+        return
+
+    for file in csv_files:
+        filename = os.path.basename(file)
+        print(f"\nIniciando processamento seguro: {filename}")
+        
+        #Inspeção detalhada
+        encoding, delimiter, header_idx = analyze_file_structure(file)
+        print(f"Separador: '{delimiter}' | Cabeçalho na linha: {header_idx}")
+        
+        df = pd.read_csv(
+            file, 
+            sep=delimiter, 
+            skiprows=header_idx, 
+            dtype=str, 
+            encoding=encoding, 
+            na_filter=False 
+        )
+
+        #Limpeza de espaços invisíveis
+        for col in df.columns:
+            df[col] = df[col].apply(lambda x: str(x).strip() if isinstance(x, str) else x)
+
+        #Limpeza de CNPJ
+        cnpj_columns = [col for col in df.columns if 'cnpj' in str(col).lower()]
+        if not cnpj_columns:
+            print("Sem CNPJs neste arquivo.")
+        
+        for cnpj_col in cnpj_columns:
+            print(f"  -> Higienizando coluna: {cnpj_col}")
+            df[cnpj_col] = df[cnpj_col].apply(safe_clean_cnpj)
+
+        output_path = os.path.join(TRUSTED_DIR, filename)
+        df.to_csv(output_path, sep=delimiter, index=False, encoding='utf-8')
+        print(f"Salvo com sucesso.")
+
+if __name__ == "__main__":
+    processar_arquivos()
