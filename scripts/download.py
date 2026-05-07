@@ -2,9 +2,9 @@ import os
 import requests
 
 URLS_ANP = {
-    "postos": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/arquivos-dados-cadastrais-dos-revendedores-varejistas-de-combustiveis-automotivos/dados-cadastrais-revendedores-varejistas-combustiveis-automoveis.csv", 
-    "distribuidoras": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/dcl/planilha-aea-filiais.csv",
-    "tanques": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/arquivos-tancagem-do-abastecimento-nacional-de-combustiveis/dados-abertos/2026/abril.csv"
+    "revendedores": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/arquivos-dados-cadastrais-dos-revendedores-varejistas-de-combustiveis-automotivos/dados-cadastrais-revendedores-varejistas-combustiveis-automoveis.csv", 
+    "distribuicao": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/dcl/planilha-aea-filiais.csv",
+    "tancagem": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/arquivos-tancagem-do-abastecimento-nacional-de-combustiveis/dados-abertos/2026/abril.csv"
 }
 
 RAW_DIR = "./data/raw"

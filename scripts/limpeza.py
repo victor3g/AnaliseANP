@@ -3,6 +3,7 @@ import glob
 import pandas as pd
 import re
 import csv
+import unicodedata
 
 RAW_DIR = './data/raw/'
 TRUSTED_DIR = './data/trusted/'
@@ -49,7 +50,6 @@ def analyze_file_structure(file_path):
     return encoding, delimiter, header_idx
 
 def safe_clean_cnpj(val):
-
     val_str = str(val).strip()
     
     if not val_str:
@@ -63,6 +63,16 @@ def safe_clean_cnpj(val):
         
     return val_clean.zfill(14)
 
+#Remove espaços invisíveis nas pontas, retira acentos e converte para minúsculas.
+def padronizar_texto(texto):
+
+    if not isinstance(texto, str):
+        return texto
+    
+    texto_sem_acento = unicodedata.normalize('NFKD', texto).encode('ASCII', 'ignore').decode('utf-8')
+    
+    return texto_sem_acento.lower().strip()
+
 def processar_arquivos():
     csv_files = glob.glob(os.path.join(RAW_DIR, '*.csv'))
     
@@ -74,7 +84,7 @@ def processar_arquivos():
         filename = os.path.basename(file)
         print(f"\nIniciando processamento seguro: {filename}")
         
-        #Inspeção detalhada
+        # Inspeção detalhada
         encoding, delimiter, header_idx = analyze_file_structure(file)
         print(f"Separador: '{delimiter}' | Cabeçalho na linha: {header_idx}")
         
@@ -87,9 +97,12 @@ def processar_arquivos():
             na_filter=False 
         )
 
-        #Limpeza de espaços invisíveis
+        #Padronização dos Nomes das Colunas
+        df.columns = [padronizar_texto(col).replace(' ', '') for col in df.columns]
+
+        #Limpeza de dados
         for col in df.columns:
-            df[col] = df[col].apply(lambda x: str(x).strip() if isinstance(x, str) else x)
+            df[col] = df[col].apply(padronizar_texto)
 
         #Limpeza de CNPJ
         cnpj_columns = [col for col in df.columns if 'cnpj' in str(col).lower()]
@@ -102,8 +115,7 @@ def processar_arquivos():
 
         output_path = os.path.join(TRUSTED_DIR, filename)
         df.to_csv(output_path, sep=delimiter, index=False, encoding='utf-8')
-        print(f"Salvo com sucesso!")
+        print("Salvo com sucesso!")
 
 if __name__ == "__main__":
-    
     processar_arquivos()
