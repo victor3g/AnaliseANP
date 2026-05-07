@@ -40,4 +40,4 @@ if __name__ == "__main__":
     for nome_entidade, link in URLS_ANP.items():
         baixar_arquivo(nome_entidade, link, RAW_DIR)
         
-    print("=== Extração Concluída ===")
+    print("Processo Concluído!")

@@ -18,8 +18,8 @@ def analyze_file_structure(file_path):
     except UnicodeDecodeError:
         encoding = 'latin1'
 
+    #verifica as primeiras 100 linhas
     with open(file_path, 'r', encoding=encoding) as f:
-        # Lê até as primeiras 100 linhas não-vazias
         lines = [line.strip() for line in f.readlines()[:100] if line.strip()]
         
     if not lines:
@@ -97,12 +97,13 @@ def processar_arquivos():
             print("Sem CNPJs neste arquivo.")
         
         for cnpj_col in cnpj_columns:
-            print(f"  -> Higienizando coluna: {cnpj_col}")
+            print(f"Limpando coluna: {cnpj_col}")
             df[cnpj_col] = df[cnpj_col].apply(safe_clean_cnpj)
 
         output_path = os.path.join(TRUSTED_DIR, filename)
         df.to_csv(output_path, sep=delimiter, index=False, encoding='utf-8')
-        print(f"Salvo com sucesso.")
+        print(f"Salvo com sucesso!")
 
 if __name__ == "__main__":
+    
     processar_arquivos()
