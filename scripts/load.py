@@ -27,10 +27,10 @@ def carregar_modelar_dados():
 
         #Configuração das tabelas
         tabelas = {
-            "populacao.csv": {"nome": "tb_populacao", "sep": ";"},
-            "revendedores.csv": {"nome": "tb_revendedores", "sep": ";"},
-            "distribuicao.csv": {"nome": "tb_distribuicao", "sep": ";"},
-            "tancagem.csv": {"nome": "tb_tancagem", "sep": ","}
+            "populacao.csv": {"nome": "tb_populacao", "sep": ";", "tipo_string": ["uf"]},
+            "revendedores.csv": {"nome": "tb_revendedores", "sep": ";", "tipo_string": ["cnpj", "uf"]},
+            "distribuicao.csv": {"nome": "tb_distribuicao", "sep": ";", "tipo_string": ["cnpj", "uf"]},
+            "tancagem.csv": {"nome": "tb_tancagem", "sep": ",", "tipo_string": ["uf"]}
         }
 
         #Ciclo de Carga
@@ -39,8 +39,10 @@ def carregar_modelar_dados():
             
             if os.path.exists(caminho_arquivo):
                 print(f"Enviando {config['nome']} para o banco...")
+
+                tipo = {col: str for col in config['tipo_string']}
                 
-                df = pd.read_csv(caminho_arquivo, sep=config['sep'], encoding='utf-8', dtype=str)
+                df = pd.read_csv(caminho_arquivo, sep=config['sep'], encoding='utf-8', dtype=tipo)
                 
                 #Envia para o PostgreSQL
                 df.to_sql(config['nome'], engine, if_exists='replace', index=False)
