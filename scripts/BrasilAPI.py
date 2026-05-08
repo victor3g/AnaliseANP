@@ -18,7 +18,7 @@ def criar_csv_populacao():
         nome_arquivo = os.path.join(RAW_DIR, "populacao.csv")
         
         with open(nome_arquivo, mode='w', newline='', encoding='utf-8-sig') as arquivo_csv:
-            colunas = ['id', 'sigla', 'nome', 'regiao_sigla', 'regiao_nome', 'populacao_estimada', 'periodo']
+            colunas = ['id', 'uf', 'nome', 'regiao_sigla', 'regiao_nome', 'populacao_estimada', 'periodo']
             escritor = csv.DictWriter(arquivo_csv, fieldnames=colunas, delimiter=';')
             escritor.writeheader()
             
@@ -47,7 +47,7 @@ def criar_csv_populacao():
                 # Monta a linha tratando os valores finais para que não fiquem em branco no CSV
                 linha = {
                     'id': estado.get('id', ''),
-                    'sigla': sigla,
+                    'uf': sigla,
                     'nome': estado.get('nome', ''),
                     'regiao_sigla': estado.get('regiao', {}).get('sigla', ''),
                     'regiao_nome': estado.get('regiao', {}).get('nome', ''),
