@@ -104,3 +104,7 @@ Densidade de Infraestrutura: Análise da relação entre a população de um est
 Capilaridade Logística: Dispersão geográfica das instalações de tancagem em relação às principais rotas de distribuição do país.
 
 ![Visão Geral](./img/image.png)
+
+---
+
+_Ultima atualização Maio/2026_
