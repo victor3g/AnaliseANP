@@ -62,34 +62,34 @@ O banco de dados (`anp_bi`) foi estruturado em um modelo analítico relacional c
 ### Passo a Passo
 
 **1. Clone o repositório:**
-
+```sh
 git clone [https://github.com/victor3g/AnaliseANP.git]
-
+```
 **2. Suba o Banco de Dados com Docker:**
 Isso inicializará o PostgreSQL na porta 5432.
-
+```sh
 docker-compose up -d
-
+```
 **3. Instale as dependências do Python:**
-
+```sh
 pip install pandas requests sqlalchemy psycopg2-binary python-dotenv
-
+```
 **4. Configure as Variáveis de Ambiente:**
 Crie um arquivo chamado .env dentro da pasta scripts/ contendo a URI de conexão com o banco de dados que acabou de ser criado pelo Docker:
 
 **5. Execute o Pipeline de Dados:**
 Execute os scripts na ordem abaixo para realizar o ETL completo:
 
-# 5.1 Extrai os dados da ANP
+## 5.1 Extrai os dados da ANP
 python scripts/download.py
 
-# 5.2 Extrai os dados populacionais
+## 5.2 Extrai os dados populacionais
 python scripts/BrasilAPI.py
 
-# 5.3 Realiza o tratamento e limpeza dos dados
+## 5.3 Realiza o tratamento e limpeza dos dados
 python scripts/limpeza.py
 
-# 5.4 Carrega os dados no PostgreSQL e cria a modelagem
+## 5.4 Carrega os dados no PostgreSQL e cria a modelagem
 python scripts/load.py
 
 
@@ -102,3 +102,5 @@ Capacidade de Armazenamento: Comparação do volume de tancagem total por distri
 Densidade de Infraestrutura: Análise da relação entre a população de um estado (dados IBGE) e a quantidade de postos revendedores ativos na mesma localidade.
 
 Capilaridade Logística: Dispersão geográfica das instalações de tancagem em relação às principais rotas de distribuição do país.
+
+![Visão Geral](./img/image.png)
