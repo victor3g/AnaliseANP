@@ -107,4 +107,13 @@ Capilaridade Logística: Dispersão geográfica das instalações de tancagem em
 
 ---
 
+## 🔮 Possíveis Melhorias Futuras
+
+* **Automação das Atualizações:** Hoje, os scripts precisam ser executados manualmente. O próximo passo seria usar uma ferramenta (como Apache Airflow) para programar o sistema para baixar e atualizar os dados da ANP automaticamente todos os meses.
+* **Garantia de Qualidade dos Dados:** Implementar testes automáticos nos dados usando a ferramenta dbt. Isso garantiria que, se a ANP enviar uma planilha com erro, o sistema detecte o problema antes que ele chegue ao dashboard.
+* **Migração para a Nuvem:** Transferir o banco de dados e os arquivos do computador local para servidores na nuvem. Isso deixaria o sistema online 24 horas por dia e preparado para lidar com uma quantidade gigantesca de dados.
+* **Análises Preditivas com IA:** Com a base de dados estruturada, seria possível criar modelos que cruzam o crescimento da população com o histórico da ANP para prever tendências, como quais regiões precisarão de mais infraestrutura de combustíveis nos próximos anos.
+
+---
+
 _Ultima atualização Maio/2026_
